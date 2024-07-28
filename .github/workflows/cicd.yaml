@@ -26,8 +26,8 @@ jobs:
           pip install pylint
       - name: Install dependencies
         run: |
-          mkdir lambda_template/package
-          pip install --target lambda_template/package/ -r lambda_template/requirements.txt
+          mkdir functions/lambda_template/package
+          pip install --target functions/lambda_template/package/ -r lambda_template/requirements.txt
       - name: Run lint test
         run: |
           pylint lambda_template/ --rcfile=lambda_template/.pylintrc
