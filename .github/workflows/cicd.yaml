@@ -31,7 +31,7 @@ jobs:
           do
             FUNCTION_NAME=$(basename $LAMBDA_PATH)
             echo "=== Start lint-test $FUNCTION_NAME lambda function ==="
-            
+
             cd functions/$FUNCTION_NAME
 
             echo "Installing packages"
@@ -106,7 +106,7 @@ jobs:
 
             echo "Deploying functions"
             aws lambda list-functions --profile localstack | jq '.Functions[].FunctionName' > lambda-list.txt
-            if (cat lambda-list.txt | grep '"$FUNCTION_NAME"'); then
+            if (cat lambda-list.txt | grep -q "\"$FUNCTION_NAME\""); then
               echo "Function $FUNCTION_NAME exists, updating function"
               aws lambda update-function-code \
                 --profile localstack \
