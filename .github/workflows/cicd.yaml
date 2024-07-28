@@ -23,10 +23,10 @@ jobs:
           architecture: 'x64'
       - name: Install dependencies
         run: |
-          pip install -r lambda-template/requirements.txt
+          pip install -r lambda_template/requirements.txt
       - name: Run lint test
         run: |
-          pylint lambda-template/ --rcfile=lambda-template/.pylintrc
+          pylint lambda_template/ --rcfile=lambda_template/.pylintrc
   unit-test:
     runs-on: self-hosted
     needs: ['lint-test']
@@ -38,3 +38,9 @@ jobs:
         with:
           python-version: '3.10'
           architecture: 'x64'
+      - name: Install dependencies
+        run: |
+          pip install -r lambda_template/requirements.txt
+      - name: Run lint test
+        run: |
+          python -m unittest discover -s lambda_template/tests/

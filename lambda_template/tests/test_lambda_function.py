@@ -1,5 +1,5 @@
 import unittest
-from lambda_function import lambda_handler
+from lambda_template.lambda_function import lambda_handler
 
 class TestLambdaFunction(unittest.TestCase):
     def test_lambda_handler(self):
