@@ -1,6 +1,8 @@
 import json
+import os
 
 def lambda_handler(event, context):
+    colour = os.getenv('COLOUR', 'WHITE')
     try:
         base = float(event.get('base', 0))
         height = float(event.get('height', 0))
@@ -10,7 +12,7 @@ def lambda_handler(event, context):
         area = 0.5 * base * height
         return {
             'statusCode': 200,
-            'body': json.dumps({'area': area})
+            'body': json.dumps({'area': area, 'colour': colour})
         }
     except (TypeError, ValueError) as e:
         return {

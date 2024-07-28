@@ -40,6 +40,7 @@ jobs:
 
             echo "Run lint-test"
             pylint . --rcfile=.pylintrc
+            python -m json.tool .env > /dev/null
 
             echo "=== End lint-test $FUNCTION_NAME lambda function ==="
             cd $ROOT_DIR
@@ -122,6 +123,12 @@ jobs:
                 --handler lambda_function.lambda_handler \
                 --zip-file fileb://lambda.zip
             fi
+
+            echo "Updating environments"
+            aws lambda update-function-configuration \
+              --profile=localstack \
+              --function-name $FUNCTION_NAME \
+              --environment file://.env
 
             echo "=== End deploy $FUNCTION_NAME lambda function ==="
             cd $ROOT_DIR
