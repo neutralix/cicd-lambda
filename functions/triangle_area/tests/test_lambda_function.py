@@ -14,7 +14,7 @@ class TestTriangleArea(unittest.TestCase):
         event = {'base': 0, 'height': 5}
         result = lambda_handler(event, {})
         self.assertEqual(result['statusCode'], 400)
-        
+
     def test_negative_input(self):
         event = {'base': -10, 'height': 5}
         result = lambda_handler(event, {})
