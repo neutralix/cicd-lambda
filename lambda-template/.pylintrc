@@ -20,6 +20,7 @@ single-line-if-stmt=no
 disable=C0114,  # Missing module docstring
         C0115,  # Missing class docstring
         C0116,  # Missing function or method docstring
+	W0613,  # Unused argument
 
 [REPORTS]
 # Set the output format. Available formats: text, parseable, colorized, json, json-with-metadata, html, md, pylint
