@@ -21,6 +21,9 @@ jobs:
         with:
           python-version: '3.10'
           architecture: 'x64'
+      - name: Install dependencies
+        run: |
+          pip install -r lambda-template/requirements.txt
       - name: Run lint test
         run: |
           pylint lambda-template/ --rcfile=lambda-template/.pylintrc
