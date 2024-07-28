@@ -1,2 +1,2 @@
 ### List down all dependencies here
-pylint
+boto3

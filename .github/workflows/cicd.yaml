@@ -21,9 +21,13 @@ jobs:
         with:
           python-version: '3.10'
           architecture: 'x64'
+      - name: Install pylint
+        run: |
+          pip install pylint
       - name: Install dependencies
         run: |
-          pip install -r lambda_template/requirements.txt
+          mkdir lambda_template/package
+          pip install --target lambda_template/package/ -r lambda_template/requirements.txt
       - name: Run lint test
         run: |
           pylint lambda_template/ --rcfile=lambda_template/.pylintrc
@@ -40,7 +44,56 @@ jobs:
           architecture: 'x64'
       - name: Install dependencies
         run: |
-          pip install -r lambda_template/requirements.txt
+          mkdir functions/lambda_template/package
+          pip install --target functions/lambda_template/package/ -r functions/lambda_template/requirements.txt
       - name: Run lint test
         run: |
-          python -m unittest discover -s lambda_template/tests/
+          python -m unittest discover -s functions/lambda_template/tests/
+  deploy-lambda:
+    runs-on: self-hosted
+    needs: ['unit-test']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+      - name: Deploy lambda function
+        run: |
+          ROOT_DIR=$(pwd)
+          for LAMBDA_PATH in functions/*/
+          do
+            FUNCTION_NAME=$(basename $LAMBDA_PATH)
+            echo "=== Start deploy $FUNCTION_NAME lambda function ==="
+            cd functions/$FUNCTION_NAME
+
+            echo "Installing packages"
+            mkdir package
+            pip install --target package/ -r requirements.txt
+
+            echo "Zipping functions"
+            zip -r lambda.zip *.py package/*
+
+            echo "Deploying functions"
+            aws lambda list-functions --profile localstack | jq '.Functions[].FunctionName' > lambda-list.txt
+            if (cat lambda-list.txt | grep '"$FUNCTION_NAME"'); then
+              echo "Function $FUNCTION_NAME exists, updating function"
+              aws lambda update-function-code \
+                --profile localstack \
+                --function-name $FUNCTION_NAME \
+                --zip-file fileb://lambda.zip
+            else
+              echo "Function $FUNCTION_NAME doesn't exist, creating function"
+              aws lambda create-function \
+                --profile localstack \
+                --function-name $FUNCTION_NAME \
+                --runtime python3.10 \
+                --role arn:aws:iam::000000000000:role/lambda-ex \
+                --handler lambda_function.lambda_handler \
+                --zip-file fileb://lambda.zip
+            fi
+            echo "=== End $LAMBDA_PATH lambda function deploy ==="
+            cd $ROOT_DIR
+          done
