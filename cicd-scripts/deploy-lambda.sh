@@ -22,8 +22,8 @@ do
     fi
 
     echo "=== Start deploy-lambda $FUNCTION_NAME ==="
-
-    cd functions/$FUNCTION_NAME
+    
+    cd $LAMBDA_PATH
 
     echo "Installing packages"
     mkdir package
