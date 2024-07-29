@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ROOT_DIR=$(pwd)
 for LAMBDA_PATH in functions/*/
 do
@@ -17,6 +19,6 @@ do
     python -m unittest discover -s $FUNCTION_NAME/tests/
 
     echo "=== End unit-test $FUNCTION_NAME ==="
-    
+
     cd $ROOT_DIR
 done

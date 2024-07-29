@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 BRANCH="main"
 
 while [[ "$#" -gt 0 ]]; do
