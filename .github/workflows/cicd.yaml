@@ -1,0 +1,52 @@
+name: CI/CD Lambda
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'feature/*'
+
+jobs:
+  lint-test:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+      - name: Install pylint
+        run: |
+          pip install pylint
+      - name: Run lint-test
+        run: ./cicd-scripts/lint-test.sh
+  unit-test:
+    needs: ['lint-test']
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+      - name: Run unit-test
+        run: ./cicd-scripts/unit-test.sh
+  deploy-lambda:
+    needs: ['unit-test']
+    runs-on: self-hosted
+    env:
+      TAG_NAME: ${{ github.ref_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+      - name: Deploy lambda function
+        run: ./cicd-scripts/deploy-lambda.sh --branch "${TAG_NAME}"
