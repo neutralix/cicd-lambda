@@ -117,6 +117,13 @@ Example result of existing lambda function invoke. The example environment retur
 ![](images/invoke-triangle.png)
 
 
-## Limitation & Improvement
-a
-credential aws bisa ditaro di github secrets
+## Limitation / Improvement
+
+1. CI/CD will push all lambda in repository on each run
+This can create issue when repository has grown large (ex: 100+ function).
+Check mechanism can be added to only push modified function.
+2. AWS Credential
+Credential can be stored using GitHub Actions secrets to have better security and easier modification.
+3. Clean Unused Function
+Since CI/CD run on every feature branch, this will create many of same function but with differen branch suffix.
+Delete mechanism can be added for merged/deleted branch to reduce number of lambda on AWS.
