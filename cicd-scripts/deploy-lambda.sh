@@ -30,7 +30,14 @@ do
     pip install --target package/ -r requirements.txt
 
     echo "Zipping functions"
-    zip -r lambda.zip *.py package/*
+    cd package
+    if [ "$(find . -type d | grep -v '__pycache__' | wc -l)" -gt 1 ]; then
+        zip -r ../lambda.zip . -x "*__pycache__*"
+    else
+        echo "No libraries to zip in the package directory."
+    fi
+    cd ..
+    zip lambda.zip *.py
 
     echo "Deploying functions"
     aws lambda list-functions --profile localstack | jq '.Functions[].FunctionName' > lambda-list.txt
