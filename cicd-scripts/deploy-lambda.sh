@@ -30,7 +30,10 @@ do
     pip install --target package/ -r requirements.txt
 
     echo "Zipping functions"
-    zip -r lambda.zip *.py package/*
+    cd package
+    zip -r ../lambda.zip . -x "*__pyc*"
+    cd ..
+    zip lambda.zip *.py
 
     echo "Deploying functions"
     aws lambda list-functions --profile localstack | jq '.Functions[].FunctionName' > lambda-list.txt
