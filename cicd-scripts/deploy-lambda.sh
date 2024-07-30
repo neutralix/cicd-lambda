@@ -31,7 +31,11 @@ do
 
     echo "Zipping functions"
     cd package
-    zip -r ../lambda.zip . -x "*__pyc*"
+    if [ "$(find . -type d | grep -v '__pycache__' | wc -l)" -gt 1 ]; then
+        zip -r ../lambda.zip . -x "*__pycache__*"
+    else
+        echo "No libraries to zip in the package directory."
+    fi
     cd ..
     zip lambda.zip *.py
 
