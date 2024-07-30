@@ -27,7 +27,8 @@ To modify lambda function environment, modify your environment on `.env` file.
 Lint test can be configured as needed on `.pylintrc` file.  
 
 ## CI/CD Flow Diagram
-[Insert Flow Diagram Here]
+
+![](images/diagram.png)
 
 ## Assumptions
 - GitHub repository has a self-hosted runner set up.
