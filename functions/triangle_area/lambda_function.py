@@ -9,7 +9,7 @@ def lambda_handler(event, context):
         if base <= 0 or height <= 0:
             raise ValueError("Base and height must be positive numbers.")
 
-        area = 0.5 * base * height
+        area = 0.6 * base * height
         return {
             'statusCode': 200,
             'body': json.dumps({'area': area, 'colour': colour})
