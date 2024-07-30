@@ -52,10 +52,60 @@ Branch name pattern : **`*`**
 Free branch for any purpose. CI/CD will not run on this branch. This branch could be used to work that doesn't require immediate lambda function push.  
 
 ## Documentation
-I set up a self-hosted runner to help myself get quicker feedback on developing this CI/CD.  
+I set up a self-hosted runner for this repository to help myself get quicker feedback on developing this CI/CD.  
 
-![](images/runner.jpg)
+![](images/runner.png)
+
+Then I setup LocalStack to simulate local AWS, along with fixed AWS IAM Role to be used by lambda function.
+
+> aws iam create-role \
+    --profile=localstack \
+    --role-name lambda-ex \
+    --assume-role-policy-document '{"Version": "2012-10-17","Statement": [{ "Effect": "Allow", "Principal": {"Service": "lambda.amazonaws.com"}, "Action": "sts:AssumeRole"}]}' 
+
+![](images/localstack-role.png)
+
+AWS CLI on runner host is configured to have `localstack` profile.  
+
+![](images/aws-cli-profile.png)
+
+Following that I create lambda directory design to test out `lint-test` and `unit-test` scripts. Here are some CI/CD run where `lint-test` or `unit-test` is failed:
+https://github.com/neutralix/cicd-lambda/actions/runs/10130830693/job/28012731917
+https://github.com/neutralix/cicd-lambda/actions/runs/10162175928/job/28102315125
+
+To better understand about AWS lambda deployment, I read AWS docs about Lambda environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html) and building Lambda together with its depedencies (https://docs.aws.amazon.com/lambda/latest/dg/python-package.html).  
+All depedencies will be installed under package directory and zipped together with handler code at root to have a flat directory structure.
+Deployment script will list all currently available function with `list-functions`.  
+> aws lambda list-functions --profile localstack
+If it needs to create new lambda, it will call `create-function`.  
+> aws lambda update-function-code \
+    --profile localstack \
+    --function-name $FUNCTION_NAME \
+    --zip-file fileb://lambda.zip
+If it needs to update existing lambda, it will call `update-function-code` 
+> aws lambda create-function \
+    --profile localstack \
+    --function-name $FUNCTION_NAME \
+    --runtime python3.10 \
+    --role arn:aws:iam::000000000000:role/lambda-ex \
+    --handler lambda_function.lambda_handler \
+    --zip-file fileb://lambda.zip
+Finally, it will update lambda environment with `update-function-configuration`
+> aws lambda update-function-configuration \
+    --profile=localstack \
+    --function-name $FUNCTION_NAME \
+    --environment file://.env
+
+Example of a successful complete CI/CD run:
+https://github.com/neutralix/cicd-lambda/actions/runs/10163165668
+
+As we can see, lambda function are deployed to LocalStack.
+![](images/success-cicd.png)
+
+Example result of existing lambda function invoke. The example environment returned by the lambda match our environment file.
+![](images/invoke-triangle.png)
 
 
 ## Limitation & Improvement
 a
+credential aws bisa ditaro di github secrets
