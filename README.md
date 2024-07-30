@@ -1,7 +1,8 @@
 # GitHub Actions CI/CD for AWS Lambda
 
 ## Overview
-This document provides information about the CI/CD for deploying AWS Lambda functions on a monorepo. The CI/CD is managed using GitHub Actions workflow and involves several stages from lint test, unit test, and lambda deployment.
+This document provides information about the CI/CD for deploying AWS Lambda functions on a monorepo.  
+The CI/CD is managed using GitHub Actions workflow and involves several stages from lint test, unit test, and lambda deployment.
 
 Monorepo structure:
 ```
