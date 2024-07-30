@@ -33,7 +33,7 @@ Lint test can be configured as needed on `.pylintrc` file.
 - GitHub repository has a self-hosted runner set up.
 - Docker and LocalStack are used to simulate local AWS.
 - AWS CLI on CI/CD has been statically configured for LocalStack.
-- CI/CD will push lambda code with fixed pre-created AWS IAM Role and handler.
+- CI/CD will push lambda code with fixed pre-created AWS IAM Role and handler name.
 
 ## Branching Strategy
 - Master branch  
@@ -119,11 +119,11 @@ Example result of existing lambda function invoke. The example environment retur
 
 ## Limitation / Improvement
 
-1. CI/CD will push all lambda in repository on each run
+1. CI/CD will push all lambda in repository on each run  
 This can create issue when repository has grown large (ex: 100+ function).
 Check mechanism can be added to only push modified function.
-2. AWS Credential
+2. AWS Credential  
 Credential can be stored using GitHub Actions secrets to have better security and easier modification.
-3. Clean Unused Function
-Since CI/CD run on every feature branch, this will create many of same function but with differen branch suffix.
+3. Clean Unused Function  
+Since CI/CD run on every feature branch, this will create many of same function but with different branch suffix.  
 Delete mechanism can be added for merged/deleted branch to reduce number of lambda on AWS.
